@@ -17,20 +17,20 @@
 package paging.android.example.com.pagingsample
 
 import android.os.Bundle
+import android.util.Log
 import android.view.KeyEvent
 import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.paging.PagedList
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_main.*
 
 /**
- * Shows a list of Cheeses, with swipe-to-delete, and an input field at the top to add.
- * <p>
- * Cheeses are stored in a database, so swipes and additions edit the database directly, and the UI
- * is updated automatically using paging components.
+ * 展示奶酪列表，包含刷新和删除，和在顶部输入字段添加。
+ * 奶酪都存在在数据库中，因此刷新和其它直接编辑数据，并且UI通过paging组件自动更新。
  */
 class MainActivity : AppCompatActivity() {
     private val viewModel by viewModels<CheeseViewModel>()
@@ -39,13 +39,16 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Create adapter for the RecyclerView
+        //创建RecyclerView的Adapter
         val adapter = CheeseAdapter()
         cheeseList.adapter = adapter
 
-        // Subscribe the adapter to the ViewModel, so the items in the adapter are refreshed
-        // when the list changes
-        viewModel.allCheeses.observe(this, Observer(adapter::submitList))
+        //订阅Adapter订阅到ViewModel，所以Adapter中的item在列表改变的时候刷新
+        viewModel.allCheeses.observe(this, Observer<PagedList<Cheese>> {
+            Log.d("MainActivity", "list: ${it?.size}")
+            Log.d("MainActivity", "first: ${it[0]?.name}")
+            adapter.submitList(it)
+        })
 
         initAddButtonListener()
         initSwipeToDelete()
@@ -53,7 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun initSwipeToDelete() {
         ItemTouchHelper(object : ItemTouchHelper.Callback() {
-            // enable the items to swipe to the left or right
+            //启动item从左或者右滑动
             override fun getMovementFlags(recyclerView: RecyclerView,
                                           viewHolder: RecyclerView.ViewHolder): Int =
                     makeMovementFlags(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT)
@@ -61,8 +64,7 @@ class MainActivity : AppCompatActivity() {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder,
                                 target: RecyclerView.ViewHolder): Boolean = false
 
-            // When an item is swiped, remove the item via the view model. The list item will be
-            // automatically removed in response, because the adapter is observing the live list.
+            //当item滑完，使用viewmodel移除这个item。列表的item将会自动移除，因为adapter观察了这个live list。
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 (viewHolder as CheeseViewHolder).cheese?.let {
                     viewModel.remove(it)
@@ -84,7 +86,7 @@ class MainActivity : AppCompatActivity() {
             addCheese()
         }
 
-        // when the user taps the "Done" button in the on screen keyboard, save the item.
+        //当用户在屏幕键盘中点击"Done"按钮，保存item。
         inputText.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 addCheese()
@@ -92,7 +94,7 @@ class MainActivity : AppCompatActivity() {
             }
             false // action that isn't DONE occurred - ignore
         }
-        // When the user clicks on the button, or presses enter, save the item.
+        //当用户点击on按钮，或者点击enter，保存item
         inputText.setOnKeyListener { _, keyCode, event ->
             if (event.action == KeyEvent.ACTION_DOWN && keyCode == KeyEvent.KEYCODE_ENTER) {
                 addCheese()

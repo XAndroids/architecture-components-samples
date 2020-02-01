@@ -16,53 +16,56 @@
 
 package paging.android.example.com.pagingsample
 
+import android.util.Log
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import android.view.ViewGroup
 
 /**
- * A simple PagedListAdapter that binds Cheese items into CardViews.
- * <p>
- * PagedListAdapter is a RecyclerView.Adapter base class which can present the content of PagedLists
- * in a RecyclerView. It requests new pages as the user scrolls, and handles new PagedLists by
- * computing list differences on a background thread, and dispatching minimal, efficient updates to
- * the RecyclerView to ensure minimal UI thread work.
- * <p>
- * If you want to use your own Adapter base class, try using a PagedListAdapterHelper inside your
- * adapter instead.
- *
- * @see android.arch.paging.PagedListAdapter
- * @see android.arch.paging.AsyncPagedListDiffer
+ * 简单的PageListAdapter，向CardView绑定奶酪item
+ * PageListAdapter是RecyclerView.Adapter的子类，它可以在RecyclerView中展示PagedList的内容。当用户滑动的时候
+ * 他请求新的页面，并在后台线程计算列表差异来处理新的PagedList，并将最小的，最有效的更新分发到RecyclerView来确保
+ * 最小UI线程的工作。
+ * 如果你想用你自己的Adapter子类，尝试在你的Adapter中使用PagedListAdapterHelder
  */
 class CheeseAdapter : PagedListAdapter<Cheese, CheeseViewHolder>(diffCallback) {
     override fun onBindViewHolder(holder: CheeseViewHolder, position: Int) {
+        Log.d("MainActivity", "onBindViewHolder position : ${position}")
+        Log.d("MainActivity", "onBindViewHolder Item : ${getItem(position)?.name}")
         holder.bindTo(getItem(position))
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheeseViewHolder =
-            CheeseViewHolder(parent)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CheeseViewHolder {
+        Log.d("MainActivity", "onCreateViewHolder viewType : ${viewType}")
+        return CheeseViewHolder(parent)
+    }
+
 
     companion object {
         /**
-         * This diff callback informs the PagedListAdapter how to compute list differences when new
-         * PagedLists arrive.
-         * <p>
-         * When you add a Cheese with the 'Add' button, the PagedListAdapter uses diffCallback to
-         * detect there's only a single item difference from before, so it only needs to animate and
-         * rebind a single view.
-         *
-         * @see android.support.v7.util.DiffUtil
+         * 在新的PagedList更新时，这个Diff callback通知PagedListAdapter如何计算列表差异。
+         * 当你使用Add按钮添加一个奶酪的时候，PagedListAdapter使用diffCallback来检测和以前相比有只有一个item不同，
+         * 因此它只需要动画和重渲染一个view
          */
         private val diffCallback = object : DiffUtil.ItemCallback<Cheese>() {
-            override fun areItemsTheSame(oldItem: Cheese, newItem: Cheese): Boolean =
-                    oldItem.id == newItem.id
+            override fun areItemsTheSame(oldItem: Cheese, newItem: Cheese): Boolean {
+                Log.d("MainActivity", "areItemsTheSame")
+                Log.d("MainActivity", "oldItem.id : ${oldItem.name}")
+                Log.d("MainActivity", "newItem.id : ${newItem.name}")
+                return oldItem.id == newItem.id
+            }
 
             /**
-             * Note that in kotlin, == checking on data classes compares all contents, but in Java,
-             * typically you'll implement Object#equals, and use it to compare object contents.
+             * 在Kotlin中注意，==检查数据类比较所有内容，但是在Java中，通常你需要实现对象的equals，并使用它来比较
+             * 对象的内容。
              */
-            override fun areContentsTheSame(oldItem: Cheese, newItem: Cheese): Boolean =
-                    oldItem == newItem
+            override fun areContentsTheSame(oldItem: Cheese, newItem: Cheese): Boolean{
+                Log.d("MainActivity", "areContentsTheSame")
+                Log.d("MainActivity", "oldItem.id : ${oldItem.name}")
+                Log.d("MainActivity", "newItem.id : ${newItem.name}")
+                return  oldItem == newItem
+            }
+
         }
     }
 }

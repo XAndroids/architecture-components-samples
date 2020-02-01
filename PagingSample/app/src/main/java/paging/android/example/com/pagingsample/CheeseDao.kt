@@ -23,13 +23,13 @@ import androidx.room.Insert
 import androidx.room.Query
 
 /**
- * Database Access Object for the Cheese database.
+ * 奶奶数据库的数据库访问对象
  */
 @Dao
 interface CheeseDao {
+
     /**
-     * Room knows how to return a LivePagedListProvider, from which we can get a LiveData and serve
-     * it back to UI via ViewModel.
+     * Room知道如何返回一个LivePageListProvider，我们可以从它返回一个LiveData，并通过ViewModel将其返回给UI
      */
     @Query("SELECT * FROM Cheese ORDER BY name COLLATE NOCASE ASC")
     fun allCheesesByName(): DataSource.Factory<Int, Cheese>

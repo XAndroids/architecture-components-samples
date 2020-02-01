@@ -22,8 +22,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 
 /**
- * A simple ViewHolder that can bind a Cheese item. It also accepts null items since the data may
- * not have been fetched before it is bound.
+ * 一个简单的ViewHolder，它绑定一个奶酪item。它也接受null item，因为数据可能在它绑定的时候还没有返回。
  */
 class CheeseViewHolder(parent :ViewGroup) : RecyclerView.ViewHolder(
         LayoutInflater.from(parent.context).inflate(R.layout.cheese_item, parent, false)) {
@@ -32,8 +31,7 @@ class CheeseViewHolder(parent :ViewGroup) : RecyclerView.ViewHolder(
     var cheese : Cheese? = null
 
     /**
-     * Items might be null if they are not paged in yet. PagedListAdapter will re-bind the
-     * ViewHolder when Item is loaded.
+     * Item可能为null，如果它们没有分页。在Item加载后，PagedListAdapter将会重新绑定这个ViewHodler。
      */
     fun bindTo(cheese : Cheese?) {
         this.cheese = cheese

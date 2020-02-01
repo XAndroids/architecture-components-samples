@@ -22,41 +22,37 @@ import androidx.paging.Config
 import androidx.paging.toLiveData
 
 /**
- * A simple ViewModel that provides a paged list of delicious Cheeses.
+ * 简单的ViewModel提供美味奶酪的分页列表
  */
 class CheeseViewModel(app: Application) : AndroidViewModel(app) {
     val dao = CheeseDb.get(app).cheeseDao()
 
     /**
-     * We use -ktx Kotlin extension functions here, otherwise you would use LivePagedListBuilder(),
-     * and PagedList.Config.Builder()
+     * 在我在这里使用-ktx Kotlin扩展方法，另一方面你需要使用LivePagedListBuilder()，和PagedList.Config.Builder()
      */
     val allCheeses = dao.allCheesesByName().toLiveData(Config(
-            /**
-             * A good page size is a value that fills at least a screen worth of content on a large
-             * device so the User is unlikely to see a null item.
-             * You can play with this constant to observe the paging behavior.
-             * <p>
-             * It's possible to vary this with list device size, but often unnecessary, unless a
-             * user scrolling on a large device is expected to scroll through items more quickly
-             * than a small device, such as when the large device uses a grid layout of items.
-             */
-            pageSize = 30,
 
             /**
-             * If placeholders are enabled, PagedList will report the full size but some items might
-             * be null in onBind method (PagedListAdapter triggers a rebind when data is loaded).
-             * <p>
-             * If placeholders are disabled, onBind will never receive null but as more pages are
-             * loaded, the scrollbars will jitter as new pages are loaded. You should probably
-             * disable scrollbars if you disable placeholders.
+             * 好的页面大小值，它在大型设备上至少填充一个屏幕的内容，因此用户不太可能看见null项。
+             * 你可以使用这个常量来观察分页行为。
+             * 可能根据设备的大小调整，但是通常没有必要，除非用户在大型设备上滑动时，滑动项的速度会比小型设备快，
+             * 比如大型设备使用项目的网格布局的时候。
+             */
+            pageSize = 20,
+
+            /**
+             * 如果启用了placeholder，PageList将报告完整的大小，但是一些item可能在onBind方法中为null（PageListAdapter
+             * 在数据加载时触发重新绑定）
+             *
+             * 如果关闭了placeholder，onBind将不会获取null，但是会加载更多的页面，当加载新页面的时候滚动条可能会抖动。
+             * 如果你关闭了placeholder，你可能应该关闭滚动条。
              */
             enablePlaceholders = true,
 
             /**
-             * Maximum number of items a PagedList should hold in memory at once.
-             * <p>
-             * This number triggers the PagedList to start dropping distant pages as more are loaded.
+             * PageList在内从中一次性保存的最大数量item。
+             * 这个数触发了PageList在加载更多页面时开始删除远程页面。
+             * //FIXME 难道是滑动很多页面，人后内存回收最前面item的内存？？如何实现的？
              */
             maxSize = 200))
 

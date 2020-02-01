@@ -21,8 +21,7 @@ import androidx.room.*
 import android.content.Context
 
 /**
- * Singleton database object. Note that for a real app, you should probably use a Dependency
- * Injection framework or Service Locator to create the singleton database.
+ * 单例database对象，注意在真实的app中，你应该使用依赖注入框架，或者Service Locator创建单例数据库
  */
 @Database(entities = arrayOf(Cheese::class), version = 1)
 abstract class CheeseDb : RoomDatabase() {
@@ -45,10 +44,10 @@ abstract class CheeseDb : RoomDatabase() {
         }
 
         /**
-         * fill database with list of cheeses
+         * 使用奶酪列表填充数据库
          */
         private fun fillInDb(context: Context) {
-            // inserts in Room are executed on the current thread, so we insert in the background
+            //Room中的插入是在当前线程执行，所以我们在后台线程插入
             ioThread {
                 get(context).cheeseDao().insert(
                         CHEESE_DATA.map { Cheese(id = 0, name = it) })
