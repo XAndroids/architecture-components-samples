@@ -45,6 +45,8 @@ class MainActivity : AppCompatActivity() {
 
         //订阅Adapter订阅到ViewModel，所以Adapter中的item在列表改变的时候刷新
         viewModel.allCheeses.observe(this, Observer<PagedList<Cheese>> {
+            //FIXME 并没有发现，分页的加载，allCheeses只有一个加载，大小是全部数据，但是debug内存只有size * 3
+            //难道是PagedList自己内部，在加载过程中，进行分页获取了？？
             Log.d("MainActivity", "list: ${it?.size}")
             Log.d("MainActivity", "first: ${it[0]?.name}")
             adapter.submitList(it)

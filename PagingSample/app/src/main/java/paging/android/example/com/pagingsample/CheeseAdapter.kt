@@ -49,6 +49,7 @@ class CheeseAdapter : PagedListAdapter<Cheese, CheeseViewHolder>(diffCallback) {
          */
         private val diffCallback = object : DiffUtil.ItemCallback<Cheese>() {
             override fun areItemsTheSame(oldItem: Cheese, newItem: Cheese): Boolean {
+                //在数据有变化，渲染之前进行Diff对比
                 Log.d("MainActivity", "areItemsTheSame")
                 Log.d("MainActivity", "oldItem.id : ${oldItem.name}")
                 Log.d("MainActivity", "newItem.id : ${newItem.name}")
